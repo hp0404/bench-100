@@ -174,30 +174,57 @@
             flex-shrink: 0;
         }
 
-        .legend {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.5rem;
-            padding: 1rem 0;
-            margin-bottom: 1.5rem;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
+        .legend-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .legend-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .legend-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 0.75rem;
         }
 
         .legend-item {
             display: flex;
-            align-items: center;
-            gap: 0.4rem;
+            align-items: flex-start;
+            gap: 0.6rem;
         }
 
         .legend-badge {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.75rem;
+            font-size: 0.7rem;
             font-weight: 600;
-            padding: 0.15rem 0.5rem;
+            padding: 0.2rem 0.5rem;
             border-radius: 4px;
             background: var(--bg-input);
             border: 1px solid var(--border);
+            flex-shrink: 0;
+            min-width: 45px;
+            text-align: center;
+        }
+
+        .legend-text {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .legend-text strong {
+            color: var(--text);
+            font-weight: 600;
         }
 
         .week-section {
@@ -439,11 +466,26 @@
             color: var(--text-muted);
         }
 
-        .result-cell {
+        .result-input {
+            width: 100%;
+            padding: 0.3rem 0.4rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            background: var(--bg-input);
             border: 1px dashed var(--border);
             border-radius: 4px;
-            min-height: 28px;
-            background: var(--bg-input);
+            color: var(--text);
+            text-align: center;
+        }
+
+        .result-input:focus {
+            outline: none;
+            border-style: solid;
+            border-color: var(--accent);
+        }
+
+        .result-input::placeholder {
+            color: var(--text-muted);
         }
 
         .user-weight-input {
@@ -545,8 +587,9 @@
             .day-section.collapsed .day-content {
                 display: block !important;
             }
-            .result-cell {
-                min-height: 24px;
+            .result-input {
+                border-style: solid;
+                border-color: var(--border);
             }
         }
 
@@ -630,22 +673,41 @@
             </div>
         </section>
 
-        <div class="legend">
-            <div class="legend-item">
-                <span class="legend-badge">ЛВ</span>
-                <span>40-55%</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-badge">СВ</span>
-                <span>50-60%</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-badge">ВВ</span>
-                <span>70-85%</span>
-            </div>
-            <div class="legend-item">
-                <span class="legend-badge">МВ</span>
-                <span>мін. вага</span>
+        <div class="legend-section">
+            <div class="legend-title">Умовні позначення</div>
+            <div class="legend-grid">
+                <div class="legend-item">
+                    <span class="legend-badge">ЛВ</span>
+                    <span class="legend-text"><strong>Легка вага</strong> — 40-55% від 1RM, запас 8+ повторів</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">СВ</span>
+                    <span class="legend-text"><strong>Середня вага</strong> — 50-60% від 1RM, запас 5-6 повторів</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">ВВ</span>
+                    <span class="legend-text"><strong>Важка вага</strong> — 70-85% від 1RM, запас 1-2 повтори</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">МВ</span>
+                    <span class="legend-text"><strong>Мінімальна вага</strong> — ледь відчувається або без ваги</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">Х×У</span>
+                    <span class="legend-text"><strong>Х по У</strong> — Х підходів по У повторень</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">↗</span>
+                    <span class="legend-text"><strong>Зі зростанням ваги</strong> — від легкої до важкої (запас 1-2)</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">→</span>
+                    <span class="legend-text"><strong>По разу в гору</strong> — підходи на 1 повтор до максимальної</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-badge">сінгли</span>
+                    <span class="legend-text"><strong>Сінгли</strong> — 1 повторення з паузою на грудях</span>
+                </div>
             </div>
         </div>
 
@@ -1094,7 +1156,7 @@
                                     <td class="exercise-name">${ex.name}</td>
                                     <td class="sets-reps">${ex.sets}</td>
                                     <td>${weightCell}</td>
-                                    <td><div class="result-cell"></div></td>
+                                    <td><input type="text" class="result-input" placeholder="—"></td>
                                 </tr>
                             `;
                         });
