@@ -1,0 +1,1062 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ЖИМ 100 КГ — Тренувальна програма</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --bg: #fafafa;
+            --bg-card: #ffffff;
+            --bg-input: #f5f5f5;
+            --text: #1a1a1a;
+            --text-secondary: #666666;
+            --text-muted: #999999;
+            --border: #e5e5e5;
+            --accent: #e63946;
+            --accent-light: rgba(230, 57, 70, 0.08);
+            --warmup: #2a9d8f;
+            --warmup-bg: rgba(42, 157, 143, 0.06);
+            --weight-bg: rgba(230, 57, 70, 0.1);
+            --shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+
+        [data-theme="dark"] {
+            --bg: #0d0d0d;
+            --bg-card: #161616;
+            --bg-input: #1f1f1f;
+            --text: #f0f0f0;
+            --text-secondary: #a0a0a0;
+            --text-muted: #666666;
+            --border: #2a2a2a;
+            --accent: #e63946;
+            --accent-light: rgba(230, 57, 70, 0.12);
+            --warmup: #2a9d8f;
+            --warmup-bg: rgba(42, 157, 143, 0.1);
+            --weight-bg: rgba(230, 57, 70, 0.15);
+            --shadow: none;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.25rem;
+        }
+
+        .header-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .theme-toggle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            transition: all 0.2s;
+        }
+
+        .theme-toggle:hover {
+            border-color: var(--accent);
+        }
+
+        .config-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .config-section h2 {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--text-muted);
+            margin-bottom: 1rem;
+        }
+
+        .config-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .config-item {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+        }
+
+        .config-item.primary {
+            grid-column: 1 / -1;
+        }
+
+        .config-item label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .config-item .input-wrap {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .config-item input {
+            width: 100%;
+            padding: 0.6rem 0.75rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            transition: border-color 0.2s;
+        }
+
+        .config-item.primary input {
+            font-size: 1.5rem;
+            padding: 0.75rem 1rem;
+            font-weight: 600;
+        }
+
+        .config-item input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .config-item .unit {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            padding: 1rem 0;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .legend-badge {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.15rem 0.5rem;
+            border-radius: 4px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+        }
+
+        .week-section {
+            margin-bottom: 1.5rem;
+            page-break-inside: avoid;
+        }
+
+        .week-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow);
+        }
+
+        .week-header:hover {
+            border-color: var(--accent);
+        }
+
+        .week-header h2 {
+            font-size: 1rem;
+            font-weight: 600;
+        }
+
+        .week-toggle {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            transition: transform 0.3s;
+        }
+
+        .week-section.collapsed .week-toggle {
+            transform: rotate(-90deg);
+        }
+
+        .week-section.collapsed .week-content {
+            display: none;
+        }
+
+        .week-content {
+            margin-top: 0.5rem;
+        }
+
+        .day-section {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            padding: 1.25rem;
+            margin-bottom: 0.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .day-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .day-number {
+            width: 28px;
+            height: 28px;
+            background: var(--accent);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .day-title {
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        .block {
+            margin-bottom: 1rem;
+        }
+
+        .block:last-child {
+            margin-bottom: 0;
+        }
+
+        .block-header {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .block.warmup .block-header,
+        .block.cooldown .block-header {
+            color: var(--warmup);
+        }
+
+        .warmup-list {
+            list-style: none;
+            padding: 0.75rem;
+            background: var(--warmup-bg);
+            border-radius: 8px;
+        }
+
+        .warmup-list li {
+            padding: 0.25rem 0;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .warmup-list li + li {
+            border-top: 1px solid var(--border);
+            margin-top: 0.25rem;
+            padding-top: 0.5rem;
+        }
+
+        .exercise-row {
+            display: grid;
+            grid-template-columns: 24px 1fr auto;
+            gap: 0.75rem;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .exercise-row + .exercise-row {
+            border-top: 1px solid var(--border);
+        }
+
+        .exercise-num {
+            width: 24px;
+            height: 24px;
+            background: var(--accent-light);
+            color: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .exercise-name {
+            font-size: 0.9rem;
+        }
+
+        .exercise-details {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .sets-reps {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .weight-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--weight-bg);
+            padding: 0.25rem 0.6rem;
+            border-radius: 5px;
+            min-width: 65px;
+            text-align: center;
+        }
+
+        .weight-display.empty {
+            color: var(--text-muted);
+            background: var(--bg-input);
+        }
+
+        .user-weight-input {
+            width: 60px;
+            padding: 0.25rem 0.4rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            color: var(--text);
+            text-align: center;
+        }
+
+        .user-weight-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .save-section {
+            text-align: center;
+            padding: 2rem 1rem;
+            margin-top: 1rem;
+        }
+
+        .save-btn {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 0.85rem 2rem;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .save-btn:hover {
+            opacity: 0.9;
+        }
+
+        .note {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+
+        .loading-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .loading-spinner {
+            text-align: center;
+            color: white;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.2);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media print {
+            .config-section, .save-section, .theme-toggle {
+                display: none !important;
+            }
+            .week-section.collapsed .week-content {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 1rem; }
+            .exercise-row {
+                grid-template-columns: 24px 1fr;
+            }
+            .exercise-details {
+                grid-column: 1 / -1;
+                margin-left: 32px;
+                margin-top: 0.25rem;
+            }
+            .config-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <div class="spinner"></div>
+            <p>Генерую PDF...</p>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <h1>ЖИМ 100 КГ</h1>
+                <p>Тренувальна програма · Дмитро Головинський</p>
+            </div>
+            <button class="theme-toggle" onclick="toggleTheme()" title="Змінити тему">
+                <span id="themeIcon">🌙</span>
+            </button>
+        </header>
+
+        <section class="config-section" id="configSection">
+            <h2>Налаштування</h2>
+            <div class="config-grid">
+                <div class="config-item primary">
+                    <label>Разовий максимум у жимі лежачи</label>
+                    <div class="input-wrap">
+                        <input type="number" id="oneRepMax" value="80" min="20" max="300" step="2.5">
+                        <span class="unit">кг</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <label>Біцепс стоячи</label>
+                    <div class="input-wrap">
+                        <input type="number" id="coef_biceps" value="35" min="10" max="100" step="1">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <label>Жим гантель похило</label>
+                    <div class="input-wrap">
+                        <input type="number" id="coef_incline" value="32" min="10" max="100" step="1">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <label>Жим стоячи</label>
+                    <div class="input-wrap">
+                        <input type="number" id="coef_ohp" value="60" min="20" max="100" step="1">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+                <div class="config-item">
+                    <label>Жим вузьким</label>
+                    <div class="input-wrap">
+                        <input type="number" id="coef_close_grip" value="85" min="30" max="100" step="1">
+                        <span class="unit">%</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="legend">
+            <div class="legend-item">
+                <span class="legend-badge">ЛВ</span>
+                <span>40-55%</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-badge">СВ</span>
+                <span>50-60%</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-badge">ВВ</span>
+                <span>70-85%</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-badge">МВ</span>
+                <span>мін. вага</span>
+            </div>
+        </div>
+
+        <div id="programContent"></div>
+
+        <section class="save-section" id="saveSection">
+            <button class="save-btn" onclick="savePDF()">Зберегти як PDF</button>
+            <p class="note">Заокруглення до 2.5 кг для штанги</p>
+        </section>
+    </div>
+
+    <script>
+        // Theme management
+        function toggleTheme() {
+            const body = document.body;
+            const icon = document.getElementById('themeIcon');
+            const isDark = body.getAttribute('data-theme') === 'dark';
+            
+            if (isDark) {
+                body.removeAttribute('data-theme');
+                icon.textContent = '🌙';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.textContent = '☀️';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+
+        // Load saved theme
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                document.getElementById('themeIcon').textContent = '☀️';
+            }
+        })();
+
+        // Week toggle
+        function toggleWeek(weekId) {
+            const section = document.getElementById(weekId);
+            section.classList.toggle('collapsed');
+            
+            // Save state
+            const collapsed = JSON.parse(localStorage.getItem('collapsedWeeks') || '{}');
+            collapsed[weekId] = section.classList.contains('collapsed');
+            localStorage.setItem('collapsedWeeks', JSON.stringify(collapsed));
+        }
+
+        // Weight calculation
+        const WEIGHT_RANGES = {
+            'ЛВ': { min: 0.40, max: 0.55, display: 0.47 },
+            'СВ': { min: 0.50, max: 0.60, display: 0.55 },
+            'ВВ': { min: 0.70, max: 0.85, display: 0.77 }
+        };
+
+        // Round to 2.5 kg for barbell exercises
+        function roundToBarbell(weight) {
+            return Math.round(weight / 2.5) * 2.5;
+        }
+
+        // Round to 0.5 kg for other exercises
+        function roundToHalf(weight) {
+            return Math.round(weight * 2) / 2;
+        }
+
+        // Program data
+        const program = {
+            week1: {
+                day1: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Підйом прямих рук до гори 3×10",
+                        "Підйом прямих рук через сторони 3×10",
+                        "Статичне утримання з упором в стіну 2×10с на руку",
+                        "Статичне утримання боком 2×10с на руку"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "5×5", weight: "ЛВ", type: "bench" },
+                        { name: "Тяга верхнього блоку з депресією лопатки", sets: "3×6", weight: "ЛВ", type: "other" },
+                        { name: "Шраги з ретракцією лопатки", sets: "5×5", weight: "ЛВ", type: "other" },
+                        { name: "Жим лежачи", sets: "4×4", weight: "СВ", type: "bench" },
+                        { name: "Біцепс стоячи", sets: "4×8", weight: "ЛВ", type: "biceps" }
+                    ],
+                    cooldown: [
+                        "Натяжка лопаток стоячи перед дзеркалом 3×6",
+                        "Натяжка лопаток з упором в лавку 3×6",
+                        "Зашагування руками на платформу 3×6 на руку"
+                    ]
+                },
+                day2: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Підйом прямих рук до гори 3×10",
+                        "Підйом прямих рук через сторони 3×10",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Фіксація лопатки з нахилом 2×10 на руку"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "2×2 → по 1 в гору", weight: "ЛВ→", type: "bench_pyramid" },
+                        { name: "Жим Арнольда", sets: "3×10", weight: "ЛВ", type: "other" },
+                        { name: "Тяга нижнього блоку з ретракцією", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Жим вузьким хватом", sets: "3×8", weight: "ЛВ", type: "close_grip" },
+                        { name: "Молоткові згинання", sets: "4×5", weight: "СВ", type: "other" }
+                    ],
+                    cooldown: [
+                        "Натяжка лопаток стоячи перед дзеркалом 3×6",
+                        "Натяжка лопаток з упором в лавку 3×6",
+                        "Відведення лежачи на боку МВ 3×6",
+                        "Відведення лежачи на животу МВ 3×6"
+                    ]
+                },
+                day3: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Підйом прямих рук до гори 3×10",
+                        "Підйом прямих рук через сторони 3×10",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Натяжка лопаток лежачи на підлозі 3×5"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "5×5 + 3×1 сінгли", weight: "ЛВ", type: "bench" },
+                        { name: "Жим гантель на похилій лавці", sets: "3×8", weight: "СВ", type: "incline" },
+                        { name: "Махи на середню дельту", sets: "3×8 ↗", weight: "↗", type: "other" },
+                        { name: "Махи на задню дельту", sets: "3×8 ↗", weight: "↗", type: "other" },
+                        { name: "Жим стоячи", sets: "4×4", weight: "СВ", type: "ohp" },
+                        { name: "Розгинання із-за голови", sets: "3×8", weight: "ЛВ", type: "other" }
+                    ],
+                    cooldown: [
+                        "Розтяжка мосту та передньої поверхні стегна"
+                    ]
+                }
+            },
+            week2: {
+                day1: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×6",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Імітація жиму з палкою 3×5"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "4×4 + 4×1 сінгли", weight: "ЛВ", type: "bench" },
+                        { name: "Тяга верхнього блоку з депресією", sets: "3×6", weight: "СВ", type: "other" },
+                        { name: "Шраги з ретракцією лопатки", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Жим стоячи", sets: "4×4", weight: "СВ", type: "ohp" },
+                        { name: "Біцепс стоячи", sets: "3×8", weight: "СВ", type: "biceps" }
+                    ],
+                    cooldown: [
+                        "Натяжка лопаток стоячи перед дзеркалом 3×6",
+                        "Натяжка лопаток з упором в лавку 3×6",
+                        "Зашагування руками на платформу 3×6 на руку"
+                    ]
+                },
+                day2: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×8",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Фіксація лопатки з нахилом 2×10 на руку",
+                        "Імітація жиму з палкою 3×5"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "2×2 → по 1 в гору", weight: "ЛВ→", type: "bench_pyramid" },
+                        { name: "Жим Арнольда", sets: "4×8", weight: "ЛВ", type: "other" },
+                        { name: "Тяга нижнього блоку з ретракцією", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Пуловер через лавку", sets: "3×8", weight: "ЛВ", type: "other" },
+                        { name: "Молоткові згинання", sets: "4×5", weight: "СВ", type: "other" }
+                    ],
+                    cooldown: [
+                        "Натяжка лопаток стоячи перед дзеркалом 3×6",
+                        "Натяжка лопаток з упором в лавку 3×6",
+                        "Відведення лежачи на боку МВ 3×6",
+                        "Відведення лежачи на животу МВ 3×6"
+                    ]
+                },
+                day3: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×10",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Натяжка лопаток лежачи на підлозі 3×5"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "5×5 + 3×1 сінгли", weight: "СВ", type: "bench" },
+                        { name: "Жим гантель на похилій лавці", sets: "2×8", weight: "СВ", type: "incline" },
+                        { name: "Жим вузьким хватом", sets: "4×4", weight: "СВ", type: "close_grip" },
+                        { name: "Махи на середню дельту", sets: "3×8 ↗", weight: "↗", type: "other" },
+                        { name: "Відтискання на брусах", sets: "4×4 ↗", weight: "↗", type: "other" }
+                    ],
+                    cooldown: [
+                        "Розтяжка мосту та передньої поверхні стегна",
+                        "Зашагування руками на платформу 3×6 на руку"
+                    ]
+                }
+            },
+            week3: {
+                day1: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×6",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Імітація жиму з палкою 3×5"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "4×4 + 5×1 сінгли", weight: "ЛВ", type: "bench" },
+                        { name: "Тяга верхнього блоку з депресією", sets: "3×6", weight: "СВ", type: "other" },
+                        { name: "Шраги з ретракцією лопатки", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Жим стоячи", sets: "4×4", weight: "СВ", type: "ohp" },
+                        { name: "Жим вузьким хватом", sets: "5×2", weight: "ВВ", type: "close_grip" }
+                    ],
+                    cooldown: [
+                        "Розтяжка мосту та передньої поверхні стегна",
+                        "Зашагування руками на платформу 3×6 на руку",
+                        "Натяжка лопаток лежачи на підлозі 3×5"
+                    ]
+                },
+                day2: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×8",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Фіксація лопатки з нахилом 2×10 на руку",
+                        "Імітація жиму з палкою 3×5"
+                    ],
+                    exercises: [
+                        { name: "Відтискання на брусах", sets: "4×4", weight: "власна/СВ", type: "other" },
+                        { name: "Жим Арнольда", sets: "4×10", weight: "ЛВ", type: "other" },
+                        { name: "Тяга нижнього блоку з ретракцією", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Жим лежачи", sets: "2×2 → по 1 в гору", weight: "ЛВ→", type: "bench_pyramid" },
+                        { name: "Молоткові згинання", sets: "4×5", weight: "СВ", type: "other" }
+                    ],
+                    cooldown: [
+                        "Розтяжка мосту та передньої поверхні стегна",
+                        "Відведення лежачи на боку МВ 3×6",
+                        "Відведення лежачи на животу МВ 3×6"
+                    ]
+                }
+            },
+            week4: {
+                day1: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Статичне утримання з упором 2×15с на руку",
+                        "Статичне утримання боком 2×15с на руку",
+                        "Імітація жиму з палкою 3×5"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "5×5", weight: "СВ", type: "bench" },
+                        { name: "Тяга верхнього блоку з депресією", sets: "3×6", weight: "СВ", type: "other" },
+                        { name: "Шраги з ретракцією лопатки", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Жим лежачи", sets: "4×4", weight: "ВВ", type: "bench" },
+                        { name: "Біцепс стоячи", sets: "3×8", weight: "ЛВ", type: "biceps" }
+                    ],
+                    cooldown: [
+                        "Натяжка лопаток стоячи перед дзеркалом 3×6",
+                        "Натяжка лопаток з упором в лавку 3×6",
+                        "Зашагування руками на платформу 3×6 на руку"
+                    ]
+                },
+                day2: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×8",
+                        "Підйом прямих рук через сторони 3×10",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Фіксація лопатки з нахилом 2×10 на руку"
+                    ],
+                    exercises: [
+                        { name: "Відтискання на брусах", sets: "4×4", weight: "власна/СВ", type: "other" },
+                        { name: "Жим Арнольда", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Тяга нижнього блоку з ретракцією", sets: "5×5", weight: "СВ", type: "other" },
+                        { name: "Пуловер через лавку", sets: "3×8", weight: "ЛВ", type: "other" },
+                        { name: "Розгинання із-за голови", sets: "4×5", weight: "ЛВ", type: "other" }
+                    ],
+                    cooldown: [
+                        "Відведення лежачи на боку МВ 3×6",
+                        "Відведення лежачи на животу МВ 3×6"
+                    ]
+                },
+                day3: {
+                    warmup: [
+                        "Загальна розминка, кардіо 10 хв",
+                        "Обертання плеч на похилій лавці 3×12",
+                        "Обертання тулуба з упором 3×12 на руку",
+                        "Розтяжка мосту та передньої поверхні стегна"
+                    ],
+                    exercises: [
+                        { name: "Жим лежачи", sets: "5×3", weight: "ВВ", type: "bench" },
+                        { name: "Жим гантель на похилій лавці", sets: "2×6", weight: "СВ", type: "incline" },
+                        { name: "Махи на середню дельту", sets: "3×8 ↗", weight: "↗", type: "other" },
+                        { name: "Махи на задню дельту", sets: "3×8 ↗", weight: "↗", type: "other" },
+                        { name: "Жим лежачи", sets: "5×5", weight: "ЛВ", type: "bench" }
+                    ],
+                    cooldown: [
+                        "Розтяжка мосту та передньої поверхні стегна",
+                        "Зашагування руками на платформу 3×6 на руку",
+                        "Обертання тулуба з упором 3×12 на руку"
+                    ]
+                }
+            }
+        };
+
+        function calculateWeight(type, weightCategory, oneRM) {
+            const coefBiceps = parseFloat(document.getElementById('coef_biceps').value) / 100;
+            const coefIncline = parseFloat(document.getElementById('coef_incline').value) / 100;
+            const coefOHP = parseFloat(document.getElementById('coef_ohp').value) / 100;
+            const coefCloseGrip = parseFloat(document.getElementById('coef_close_grip').value) / 100;
+
+            let exerciseRM = oneRM;
+            let isBarbell = true;
+
+            if (type === 'biceps') {
+                exerciseRM = oneRM * coefBiceps;
+                isBarbell = false; // Could be dumbbells
+            } else if (type === 'incline') {
+                exerciseRM = oneRM * coefIncline;
+                isBarbell = true; // Dumbbell but round to 2.5
+            } else if (type === 'ohp') {
+                exerciseRM = oneRM * coefOHP;
+                isBarbell = true;
+            } else if (type === 'close_grip') {
+                exerciseRM = oneRM * coefCloseGrip;
+                isBarbell = true;
+            } else if (type !== 'bench' && type !== 'bench_pyramid') {
+                return null;
+            }
+
+            if (weightCategory === '↗' || weightCategory === 'власна/СВ') {
+                return null;
+            }
+
+            const cleanCategory = weightCategory.replace('→', '');
+            
+            if (!WEIGHT_RANGES[cleanCategory]) {
+                return null;
+            }
+
+            const range = WEIGHT_RANGES[cleanCategory];
+            const weight = exerciseRM * range.display;
+            
+            // Round to 2.5 kg for barbell exercises
+            return roundToBarbell(weight);
+        }
+
+        function renderProgram() {
+            const oneRM = parseFloat(document.getElementById('oneRepMax').value) || 80;
+            const content = document.getElementById('programContent');
+            const collapsed = JSON.parse(localStorage.getItem('collapsedWeeks') || '{}');
+            
+            let html = '';
+
+            const weekNames = { week1: 'Тиждень I', week2: 'Тиждень II', week3: 'Тиждень III', week4: 'Тиждень IV' };
+            const dayNames = { day1: '1', day2: '2', day3: '3' };
+
+            for (const [weekKey, weekData] of Object.entries(program)) {
+                const isCollapsed = collapsed[weekKey] ? 'collapsed' : '';
+                html += `
+                    <section class="week-section ${isCollapsed}" id="${weekKey}">
+                        <div class="week-header" onclick="toggleWeek('${weekKey}')">
+                            <h2>${weekNames[weekKey]}</h2>
+                            <span class="week-toggle">▼</span>
+                        </div>
+                        <div class="week-content">
+                `;
+
+                for (const [dayKey, dayData] of Object.entries(weekData)) {
+                    html += `
+                        <div class="day-section">
+                            <div class="day-header">
+                                <div class="day-number">${dayNames[dayKey]}</div>
+                                <div class="day-title">Тренувальний день</div>
+                            </div>
+                    `;
+
+                    if (dayData.warmup?.length) {
+                        html += `
+                            <div class="block warmup">
+                                <div class="block-header">Розминка</div>
+                                <ul class="warmup-list">
+                                    ${dayData.warmup.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+
+                    if (dayData.exercises?.length) {
+                        html += `<div class="block exercises">
+                            <div class="block-header">Вправи</div>`;
+
+                        dayData.exercises.forEach((ex, idx) => {
+                            const calculatedWeight = calculateWeight(ex.type, ex.weight, oneRM);
+                            const inputId = `weight_${weekKey}_${dayKey}_${idx}`;
+                            const showInput = ex.type === 'other' && !['↗', 'власна/СВ'].includes(ex.weight);
+                            
+                            html += `
+                                <div class="exercise-row">
+                                    <div class="exercise-num">${idx + 1}</div>
+                                    <div class="exercise-name">${ex.name}</div>
+                                    <div class="exercise-details">
+                                        <span class="sets-reps">${ex.sets}</span>
+                                        ${calculatedWeight 
+                                            ? `<span class="weight-display">${calculatedWeight} кг</span>`
+                                            : showInput 
+                                                ? `<input type="text" class="user-weight-input" id="${inputId}" placeholder="${ex.weight}">`
+                                                : `<span class="weight-display empty">${ex.weight}</span>`
+                                        }
+                                    </div>
+                                </div>
+                            `;
+                        });
+
+                        html += `</div>`;
+                    }
+
+                    if (dayData.cooldown?.length) {
+                        html += `
+                            <div class="block cooldown">
+                                <div class="block-header">Заминка</div>
+                                <ul class="warmup-list">
+                                    ${dayData.cooldown.map(item => `<li>${item}</li>`).join('')}
+                                </ul>
+                            </div>
+                        `;
+                    }
+
+                    html += `</div>`;
+                }
+
+                html += `</div></section>`;
+            }
+
+            content.innerHTML = html;
+        }
+
+        function savePDF() {
+            const overlay = document.getElementById('loadingOverlay');
+            overlay.classList.add('active');
+
+            // Expand all weeks for PDF
+            document.querySelectorAll('.week-section').forEach(s => s.classList.remove('collapsed'));
+
+            const configSection = document.getElementById('configSection');
+            const saveSection = document.getElementById('saveSection');
+            const themeToggle = document.querySelector('.theme-toggle');
+            
+            configSection.style.display = 'none';
+            saveSection.style.display = 'none';
+            themeToggle.style.display = 'none';
+
+            const element = document.querySelector('.container');
+            const oneRM = document.getElementById('oneRepMax').value;
+            
+            const opt = {
+                margin: [8, 8, 8, 8],
+                filename: `ЖИМ_100КГ_1RM_${oneRM}кг.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: 'avoid-all', before: '.week-section' }
+            };
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                configSection.style.display = 'block';
+                saveSection.style.display = 'block';
+                themeToggle.style.display = 'flex';
+                overlay.classList.remove('active');
+                
+                // Restore collapsed state
+                const collapsed = JSON.parse(localStorage.getItem('collapsedWeeks') || '{}');
+                for (const [weekId, isCollapsed] of Object.entries(collapsed)) {
+                    if (isCollapsed) document.getElementById(weekId)?.classList.add('collapsed');
+                }
+            }).catch(err => {
+                console.error('PDF error:', err);
+                configSection.style.display = 'block';
+                saveSection.style.display = 'block';
+                themeToggle.style.display = 'flex';
+                overlay.classList.remove('active');
+            });
+        }
+
+        // Event listeners
+        ['oneRepMax', 'coef_biceps', 'coef_incline', 'coef_ohp', 'coef_close_grip'].forEach(id => {
+            document.getElementById(id).addEventListener('input', renderProgram);
+        });
+
+        renderProgram();
+    </script>
+</body>
+</html>
