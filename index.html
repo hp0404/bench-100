@@ -57,7 +57,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem 1.5rem;
         }
@@ -216,6 +216,7 @@
             cursor: pointer;
             transition: all 0.2s;
             box-shadow: var(--shadow);
+            user-select: none;
         }
 
         .week-header:hover {
@@ -227,13 +228,14 @@
             font-weight: 600;
         }
 
-        .week-toggle {
+        .toggle-icon {
             font-size: 1.25rem;
             color: var(--text-muted);
             transition: transform 0.3s;
         }
 
-        .week-section.collapsed .week-toggle {
+        .week-section.collapsed .week-header .toggle-icon,
+        .day-section.collapsed .day-header .toggle-icon {
             transform: rotate(-90deg);
         }
 
@@ -249,18 +251,23 @@
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 10px;
-            padding: 1.25rem;
             margin-bottom: 0.5rem;
             box-shadow: var(--shadow);
+            overflow: hidden;
         }
 
         .day-header {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid var(--border);
+            padding: 0.75rem 1rem;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.2s;
+        }
+
+        .day-header:hover {
+            background: var(--bg-input);
         }
 
         .day-number {
@@ -274,11 +281,21 @@
             font-size: 0.85rem;
             font-weight: 600;
             color: white;
+            flex-shrink: 0;
         }
 
         .day-title {
             font-size: 0.95rem;
             font-weight: 500;
+            flex: 1;
+        }
+
+        .day-content {
+            padding: 0 1.25rem 1.25rem;
+        }
+
+        .day-section.collapsed .day-content {
+            display: none;
         }
 
         .block {
@@ -324,16 +341,54 @@
             padding-top: 0.5rem;
         }
 
-        .exercise-row {
-            display: grid;
-            grid-template-columns: 24px 1fr auto;
-            gap: 0.75rem;
-            align-items: center;
-            padding: 0.5rem 0;
+        .exercise-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .exercise-row + .exercise-row {
-            border-top: 1px solid var(--border);
+        .exercise-table th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 500;
+            text-align: left;
+            padding: 0.5rem 0.25rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .exercise-table th:last-child {
+            text-align: center;
+        }
+
+        .exercise-table td {
+            padding: 0.6rem 0.25rem;
+            vertical-align: middle;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .exercise-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .exercise-table .col-num {
+            width: 30px;
+        }
+
+        .exercise-table .col-name {
+            width: auto;
+        }
+
+        .exercise-table .col-sets {
+            width: 110px;
+        }
+
+        .exercise-table .col-weight {
+            width: 160px;
+        }
+
+        .exercise-table .col-result {
+            width: 80px;
         }
 
         .exercise-num {
@@ -353,37 +408,46 @@
             font-size: 0.9rem;
         }
 
-        .exercise-details {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
         .sets-reps {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
             color: var(--text-muted);
         }
 
-        .weight-display {
+        .weight-info {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+        }
+
+        .weight-value {
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.85rem;
             font-weight: 600;
             color: var(--accent);
-            background: var(--weight-bg);
-            padding: 0.25rem 0.6rem;
-            border-radius: 5px;
-            min-width: 65px;
-            text-align: center;
         }
 
-        .weight-display.empty {
+        .weight-meta {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
             color: var(--text-muted);
+        }
+
+        .weight-empty {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .result-cell {
+            border: 1px dashed var(--border);
+            border-radius: 4px;
+            min-height: 28px;
             background: var(--bg-input);
         }
 
         .user-weight-input {
-            width: 60px;
+            width: 100%;
             padding: 0.25rem 0.4rem;
             font-family: 'JetBrains Mono', monospace;
             font-size: 0.8rem;
@@ -420,6 +484,11 @@
 
         .save-btn:hover {
             opacity: 0.9;
+        }
+
+        .save-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .note {
@@ -472,23 +541,31 @@
             .config-section, .save-section, .theme-toggle {
                 display: none !important;
             }
-            .week-section.collapsed .week-content {
+            .week-section.collapsed .week-content,
+            .day-section.collapsed .day-content {
                 display: block !important;
+            }
+            .result-cell {
+                min-height: 24px;
             }
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 700px) {
             .container { padding: 1rem; }
-            .exercise-row {
-                grid-template-columns: 24px 1fr;
-            }
-            .exercise-details {
-                grid-column: 1 / -1;
-                margin-left: 32px;
-                margin-top: 0.25rem;
-            }
             .config-grid {
                 grid-template-columns: 1fr 1fr;
+            }
+            .exercise-table .col-weight {
+                width: 120px;
+            }
+            .exercise-table .col-result {
+                width: 55px;
+            }
+            .weight-meta {
+                font-size: 0.6rem;
+            }
+            .weight-value {
+                font-size: 0.8rem;
             }
         }
     </style>
@@ -501,7 +578,7 @@
         </div>
     </div>
 
-    <div class="container">
+    <div class="container" id="mainContainer">
         <header>
             <div class="header-content">
                 <h1>ЖИМ 100 КГ</h1>
@@ -575,7 +652,7 @@
         <div id="programContent"></div>
 
         <section class="save-section" id="saveSection">
-            <button class="save-btn" onclick="savePDF()">Зберегти як PDF</button>
+            <button class="save-btn" id="saveBtn" onclick="savePDF()">Зберегти як PDF</button>
             <p class="note">Заокруглення до 2.5 кг для штанги</p>
         </section>
     </div>
@@ -607,32 +684,44 @@
             }
         })();
 
-        // Week toggle
+        // Toggle functions
         function toggleWeek(weekId) {
             const section = document.getElementById(weekId);
             section.classList.toggle('collapsed');
-            
-            // Save state
-            const collapsed = JSON.parse(localStorage.getItem('collapsedWeeks') || '{}');
-            collapsed[weekId] = section.classList.contains('collapsed');
-            localStorage.setItem('collapsedWeeks', JSON.stringify(collapsed));
+            saveToggleState();
         }
 
-        // Weight calculation
+        function toggleDay(dayId) {
+            const section = document.getElementById(dayId);
+            section.classList.toggle('collapsed');
+            saveToggleState();
+        }
+
+        function saveToggleState() {
+            const collapsed = {};
+            document.querySelectorAll('.week-section.collapsed, .day-section.collapsed').forEach(el => {
+                collapsed[el.id] = true;
+            });
+            localStorage.setItem('collapsedSections', JSON.stringify(collapsed));
+        }
+
+        function loadToggleState() {
+            const collapsed = JSON.parse(localStorage.getItem('collapsedSections') || '{}');
+            for (const [id, isCollapsed] of Object.entries(collapsed)) {
+                const el = document.getElementById(id);
+                if (el && isCollapsed) el.classList.add('collapsed');
+            }
+        }
+
+        // Weight calculation - ranges from the program document
         const WEIGHT_RANGES = {
-            'ЛВ': { min: 0.40, max: 0.55, display: 0.47 },
-            'СВ': { min: 0.50, max: 0.60, display: 0.55 },
-            'ВВ': { min: 0.70, max: 0.85, display: 0.77 }
+            'ЛВ': { min: 40, max: 55 },
+            'СВ': { min: 50, max: 60 },
+            'ВВ': { min: 70, max: 85 }
         };
 
-        // Round to 2.5 kg for barbell exercises
         function roundToBarbell(weight) {
             return Math.round(weight / 2.5) * 2.5;
-        }
-
-        // Round to 0.5 kg for other exercises
-        function roundToHalf(weight) {
-            return Math.round(weight * 2) / 2;
         }
 
         // Program data
@@ -879,20 +968,15 @@
             const coefCloseGrip = parseFloat(document.getElementById('coef_close_grip').value) / 100;
 
             let exerciseRM = oneRM;
-            let isBarbell = true;
 
             if (type === 'biceps') {
                 exerciseRM = oneRM * coefBiceps;
-                isBarbell = false; // Could be dumbbells
             } else if (type === 'incline') {
                 exerciseRM = oneRM * coefIncline;
-                isBarbell = true; // Dumbbell but round to 2.5
             } else if (type === 'ohp') {
                 exerciseRM = oneRM * coefOHP;
-                isBarbell = true;
             } else if (type === 'close_grip') {
                 exerciseRM = oneRM * coefCloseGrip;
-                isBarbell = true;
             } else if (type !== 'bench' && type !== 'bench_pyramid') {
                 return null;
             }
@@ -908,16 +992,22 @@
             }
 
             const range = WEIGHT_RANGES[cleanCategory];
-            const weight = exerciseRM * range.display;
-            
-            // Round to 2.5 kg for barbell exercises
-            return roundToBarbell(weight);
+            const minWeight = roundToBarbell(exerciseRM * (range.min / 100));
+            const maxWeight = roundToBarbell(exerciseRM * (range.max / 100));
+
+            return {
+                minWeight,
+                maxWeight,
+                category: cleanCategory,
+                // Always show the original percentages from PDF
+                minPercent: range.min,
+                maxPercent: range.max
+            };
         }
 
         function renderProgram() {
             const oneRM = parseFloat(document.getElementById('oneRepMax').value) || 80;
             const content = document.getElementById('programContent');
-            const collapsed = JSON.parse(localStorage.getItem('collapsedWeeks') || '{}');
             
             let html = '';
 
@@ -925,23 +1015,25 @@
             const dayNames = { day1: '1', day2: '2', day3: '3' };
 
             for (const [weekKey, weekData] of Object.entries(program)) {
-                const isCollapsed = collapsed[weekKey] ? 'collapsed' : '';
                 html += `
-                    <section class="week-section ${isCollapsed}" id="${weekKey}">
+                    <section class="week-section" id="${weekKey}">
                         <div class="week-header" onclick="toggleWeek('${weekKey}')">
                             <h2>${weekNames[weekKey]}</h2>
-                            <span class="week-toggle">▼</span>
+                            <span class="toggle-icon">▼</span>
                         </div>
                         <div class="week-content">
                 `;
 
                 for (const [dayKey, dayData] of Object.entries(weekData)) {
+                    const dayId = `${weekKey}_${dayKey}`;
                     html += `
-                        <div class="day-section">
-                            <div class="day-header">
+                        <div class="day-section" id="${dayId}">
+                            <div class="day-header" onclick="toggleDay('${dayId}')">
                                 <div class="day-number">${dayNames[dayKey]}</div>
                                 <div class="day-title">Тренувальний день</div>
+                                <span class="toggle-icon">▼</span>
                             </div>
+                            <div class="day-content">
                     `;
 
                     if (dayData.warmup?.length) {
@@ -956,32 +1048,62 @@
                     }
 
                     if (dayData.exercises?.length) {
-                        html += `<div class="block exercises">
-                            <div class="block-header">Вправи</div>`;
+                        html += `
+                            <div class="block exercises">
+                                <div class="block-header">Вправи</div>
+                                <table class="exercise-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="col-num">#</th>
+                                            <th class="col-name">Вправа</th>
+                                            <th class="col-sets">Підходи</th>
+                                            <th class="col-weight">Вага</th>
+                                            <th class="col-result">Факт</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                        `;
 
                         dayData.exercises.forEach((ex, idx) => {
-                            const calculatedWeight = calculateWeight(ex.type, ex.weight, oneRM);
-                            const inputId = `weight_${weekKey}_${dayKey}_${idx}`;
+                            const result = calculateWeight(ex.type, ex.weight, oneRM);
                             const showInput = ex.type === 'other' && !['↗', 'власна/СВ'].includes(ex.weight);
                             
-                            html += `
-                                <div class="exercise-row">
-                                    <div class="exercise-num">${idx + 1}</div>
-                                    <div class="exercise-name">${ex.name}</div>
-                                    <div class="exercise-details">
-                                        <span class="sets-reps">${ex.sets}</span>
-                                        ${calculatedWeight 
-                                            ? `<span class="weight-display">${calculatedWeight} кг</span>`
-                                            : showInput 
-                                                ? `<input type="text" class="user-weight-input" id="${inputId}" placeholder="${ex.weight}">`
-                                                : `<span class="weight-display empty">${ex.weight}</span>`
-                                        }
+                            let weightCell = '';
+                            if (result) {
+                                const weightDisplay = result.minWeight === result.maxWeight 
+                                    ? `${result.minWeight}` 
+                                    : `${result.minWeight}–${result.maxWeight}`;
+                                const percentDisplay = result.minPercent === result.maxPercent
+                                    ? `${result.minPercent}%`
+                                    : `${result.minPercent}–${result.maxPercent}%`;
+                                weightCell = `
+                                    <div class="weight-info">
+                                        <span class="weight-value">${weightDisplay} кг</span>
+                                        <span class="weight-meta">(${result.category} ${percentDisplay})</span>
                                     </div>
-                                </div>
+                                `;
+                            } else if (showInput) {
+                                weightCell = `<input type="text" class="user-weight-input" placeholder="${ex.weight}">`;
+                            } else {
+                                weightCell = `<span class="weight-empty">${ex.weight}</span>`;
+                            }
+
+                            html += `
+                                <tr>
+                                    <td><div class="exercise-num">${idx + 1}</div></td>
+                                    <td class="exercise-name">${ex.name}</td>
+                                    <td class="sets-reps">${ex.sets}</td>
+                                    <td>${weightCell}</td>
+                                    <td><div class="result-cell"></div></td>
+                                </tr>
                             `;
                         });
 
-                        html += `</div>`;
+                        html += `
+                                    </tbody>
+                                </table>
+                            </div>
+                        `;
                     }
 
                     if (dayData.cooldown?.length) {
@@ -995,60 +1117,73 @@
                         `;
                     }
 
-                    html += `</div>`;
+                    html += `</div></div>`;
                 }
 
                 html += `</div></section>`;
             }
 
             content.innerHTML = html;
+            loadToggleState();
         }
 
-        function savePDF() {
+        async function savePDF() {
+            const btn = document.getElementById('saveBtn');
             const overlay = document.getElementById('loadingOverlay');
+            
+            btn.disabled = true;
             overlay.classList.add('active');
 
-            // Expand all weeks for PDF
-            document.querySelectorAll('.week-section').forEach(s => s.classList.remove('collapsed'));
+            // Expand all sections for PDF
+            document.querySelectorAll('.week-section, .day-section').forEach(s => s.classList.remove('collapsed'));
 
             const configSection = document.getElementById('configSection');
             const saveSection = document.getElementById('saveSection');
             const themeToggle = document.querySelector('.theme-toggle');
+            const legendSection = document.querySelector('.legend');
             
             configSection.style.display = 'none';
             saveSection.style.display = 'none';
             themeToggle.style.display = 'none';
 
-            const element = document.querySelector('.container');
+            // Hide toggle icons for PDF
+            document.querySelectorAll('.toggle-icon').forEach(el => el.style.display = 'none');
+
+            const element = document.getElementById('mainContainer');
             const oneRM = document.getElementById('oneRepMax').value;
             
             const opt = {
-                margin: [8, 8, 8, 8],
+                margin: [10, 8, 10, 8],
                 filename: `ЖИМ_100КГ_1RM_${oneRM}кг.pdf`,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: { scale: 2, useCORS: true },
+                image: { type: 'jpeg', quality: 0.95 },
+                html2canvas: { 
+                    scale: 2, 
+                    useCORS: true,
+                    logging: false,
+                    letterRendering: true
+                },
                 jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: 'avoid-all', before: '.week-section' }
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'], before: '.week-section' }
             };
 
-            html2pdf().set(opt).from(element).save().then(() => {
-                configSection.style.display = 'block';
-                saveSection.style.display = 'block';
-                themeToggle.style.display = 'flex';
-                overlay.classList.remove('active');
-                
-                // Restore collapsed state
-                const collapsed = JSON.parse(localStorage.getItem('collapsedWeeks') || '{}');
-                for (const [weekId, isCollapsed] of Object.entries(collapsed)) {
-                    if (isCollapsed) document.getElementById(weekId)?.classList.add('collapsed');
-                }
-            }).catch(err => {
+            try {
+                await html2pdf().set(opt).from(element).save();
+            } catch (err) {
                 console.error('PDF error:', err);
-                configSection.style.display = 'block';
-                saveSection.style.display = 'block';
-                themeToggle.style.display = 'flex';
-                overlay.classList.remove('active');
-            });
+                alert('Помилка при генерації PDF. Спробуйте ще раз.');
+            }
+
+            // Restore UI
+            configSection.style.display = 'block';
+            saveSection.style.display = 'block';
+            themeToggle.style.display = 'flex';
+            document.querySelectorAll('.toggle-icon').forEach(el => el.style.display = '');
+            
+            overlay.classList.remove('active');
+            btn.disabled = false;
+            
+            // Restore collapsed state
+            loadToggleState();
         }
 
         // Event listeners
