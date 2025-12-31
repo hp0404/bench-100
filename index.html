@@ -168,6 +168,21 @@
             border-color: var(--accent);
         }
 
+        .config-item input[type="date"] {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.95rem;
+            cursor: pointer;
+        }
+
+        .config-item input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.5);
+            cursor: pointer;
+        }
+
+        [data-theme="dark"] .config-item input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(0.7);
+        }
+
         .config-item .unit {
             font-size: 0.85rem;
             color: var(--text-muted);
@@ -695,6 +710,12 @@
                         <span class="unit">%</span>
                     </div>
                 </div>
+                <div class="config-item">
+                    <label>Дата початку (понеділок)</label>
+                    <div class="input-wrap">
+                        <input type="date" id="startDate">
+                    </div>
+                </div>
             </div>
         </section>
 
@@ -745,6 +766,59 @@
     </div>
 
     <script>
+        // Date management
+        function getNextMonday() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();
+            const daysUntilMonday = dayOfWeek === 0 ? 1 : (8 - dayOfWeek);
+            const nextMonday = new Date(today);
+            nextMonday.setDate(today.getDate() + daysUntilMonday);
+            return nextMonday;
+        }
+
+        function formatDateForInput(date) {
+            return date.toISOString().split('T')[0];
+        }
+
+        function formatDateDisplay(date) {
+            const options = { day: 'numeric', month: 'short' };
+            return date.toLocaleDateString('uk-UA', options);
+        }
+
+        function getTrainingDates(startDate) {
+            const dates = [];
+            const start = new Date(startDate);
+            
+            for (let week = 0; week < 4; week++) {
+                const weekDates = [];
+                // Monday
+                const monday = new Date(start);
+                monday.setDate(start.getDate() + (week * 7));
+                weekDates.push(new Date(monday));
+                
+                // Wednesday
+                const wednesday = new Date(monday);
+                wednesday.setDate(monday.getDate() + 2);
+                weekDates.push(new Date(wednesday));
+                
+                // Friday
+                const friday = new Date(monday);
+                friday.setDate(monday.getDate() + 4);
+                weekDates.push(new Date(friday));
+                
+                dates.push(weekDates);
+            }
+            return dates;
+        }
+
+        function initStartDate() {
+            const startDateInput = document.getElementById('startDate');
+            if (!startDateInput.value) {
+                const nextMonday = getNextMonday();
+                startDateInput.value = formatDateForInput(nextMonday);
+            }
+        }
+
         // Theme management
         function toggleTheme() {
             const body = document.body;
@@ -1128,14 +1202,20 @@
 
         function renderProgram() {
             const oneRM = parseFloat(document.getElementById('oneRepMax').value) || 80;
+            const startDateValue = document.getElementById('startDate').value;
+            const startDate = startDateValue ? new Date(startDateValue) : getNextMonday();
+            const trainingDates = getTrainingDates(startDate);
             const content = document.getElementById('programContent');
             
             let html = '';
 
             const weekNames = { week1: 'Тиждень I', week2: 'Тиждень II', week3: 'Тиждень III', week4: 'Тиждень IV' };
-            const dayNames = { day1: '1', day2: '2', day3: '3' };
+            const dayLabels = ['Пн', 'Ср', 'Пт'];
+            const weekIndices = { week1: 0, week2: 1, week3: 2, week4: 3 };
+            const dayIndices = { day1: 0, day2: 1, day3: 2 };
 
             for (const [weekKey, weekData] of Object.entries(program)) {
+                const weekIdx = weekIndices[weekKey];
                 html += `
                     <section class="week-section" id="${weekKey}">
                         <div class="week-header" onclick="toggleWeek('${weekKey}')">
@@ -1147,11 +1227,15 @@
 
                 for (const [dayKey, dayData] of Object.entries(weekData)) {
                     const dayId = `${weekKey}_${dayKey}`;
+                    const dayIdx = dayIndices[dayKey];
+                    const dayDate = trainingDates[weekIdx][dayIdx];
+                    const dateStr = formatDateDisplay(dayDate);
+                    const dayLabel = dayLabels[dayIdx];
                     html += `
                         <div class="day-section" id="${dayId}">
                             <div class="day-header" onclick="toggleDay('${dayId}')">
-                                <div class="day-number">${dayNames[dayKey]}</div>
-                                <div class="day-title">Тренувальний день</div>
+                                <div class="day-number">${dayIdx + 1}</div>
+                                <div class="day-title">${dayLabel}, ${dateStr}</div>
                                 <span class="toggle-icon">▼</span>
                             </div>
                             <div class="day-content">
@@ -1311,7 +1395,9 @@
         ['oneRepMax', 'coef_biceps', 'coef_incline', 'coef_ohp', 'coef_close_grip'].forEach(id => {
             document.getElementById(id).addEventListener('input', renderProgram);
         });
+        document.getElementById('startDate').addEventListener('change', renderProgram);
 
+        initStartDate();
         renderProgram();
     </script>
 </body>
