@@ -101,6 +101,18 @@
             border-color: var(--accent);
         }
 
+        .header-controls {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .theme-toggle#langIcon,
+        #langIcon {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
         .config-section {
             background: var(--bg-card);
             border: 1px solid var(--border);
@@ -673,7 +685,7 @@
         }
 
         @media print {
-            .config-section, .save-section, .theme-toggle {
+            .config-section, .save-section, .header-controls {
                 display: none !important;
             }
             .week-section.collapsed .week-content,
@@ -727,9 +739,14 @@
                 <h1>ЖИМ 100 КГ</h1>
                 <p>Тренувальна програма · Дмитро Головинський</p>
             </div>
-            <button class="theme-toggle" onclick="toggleTheme()" title="Змінити тему">
-                <span id="themeIcon">🌙</span>
-            </button>
+            <div class="header-controls">
+                <button class="theme-toggle" onclick="toggleLanguage()" title="Switch language">
+                    <span id="langIcon">EN</span>
+                </button>
+                <button class="theme-toggle" onclick="toggleTheme()" title="Змінити тему">
+                    <span id="themeIcon">🌙</span>
+                </button>
+            </div>
         </header>
 
         <section class="config-section" id="configSection">
@@ -848,7 +865,8 @@
 
         function formatDateDisplay(date) {
             const options = { day: 'numeric', month: 'short' };
-            return date.toLocaleDateString('uk-UA', options);
+            const locale = currentLang === 'uk' ? 'uk-UA' : 'en-US';
+            return date.toLocaleDateString(locale, options);
         }
 
         function getTrainingDates(startDate) {
@@ -911,6 +929,259 @@
             }
         })();
 
+        // Translations
+        const translations = {
+            uk: {
+                title: 'ЖИМ 100 КГ — Тренувальна програма',
+                headerTitle: 'ЖИМ 100 КГ',
+                headerSubtitle: 'Тренувальна програма · Дмитро Головинський',
+                settings: 'Налаштування',
+                oneRepMaxLabel: 'Разовий максимум у жимі лежачи',
+                bicepsLabel: 'Біцепс стоячи',
+                inclineLabel: 'Жим гантель похило',
+                ohpLabel: 'Жим стоячи',
+                closeGripLabel: 'Жим вузьким',
+                startDateLabel: 'Дата початку (понеділок)',
+                legendTitle: 'Умовні позначення',
+                legendLV: '<strong>Легка вага</strong> — 40-55% від 1RM, запас 8+ повторів',
+                legendSV: '<strong>Середня вага</strong> — 50-60% від 1RM, запас 5-6 повторів',
+                legendVV: '<strong>Важка вага</strong> — 70-85% від 1RM, запас 1-2 повтори',
+                legendMV: '<strong>Мінімальна вага</strong> — ледь відчувається або без ваги',
+                legendXY: '<strong>Х по У</strong> — Х підходів по У повторень',
+                legendUp: '<strong>Зі зростанням ваги</strong> — від легкої до важкої (запас 1-2)',
+                legendArrow: '<strong>По разу в гору</strong> — підходи на 1 повтор до максимальної',
+                legendSingles: '<strong>Сінгли</strong> — 1 повторення з паузою на грудях',
+                compactPdfLabel: 'Компактний PDF (без розминки/заминки)',
+                savePdfBtn: 'Зберегти як PDF',
+                saveNote: 'Заокруглення до 2.5 кг для штанги',
+                generatingPdf: 'Генерую PDF...',
+                warmup: 'Розминка',
+                exercises: 'Вправи',
+                cooldown: 'Заминка',
+                thExercise: 'Вправа',
+                thSets: 'Підходи',
+                thWeight: 'Вага',
+                thResult: 'Факт',
+                week1: 'Тиждень I',
+                week2: 'Тиждень II',
+                week3: 'Тиждень III',
+                week4: 'Тиждень IV',
+                unit1RM: '% від 1RM',
+                unitPercent: '%',
+                unitKg: 'кг',
+                dayLabels: ['Пн', 'Ср', 'Пт'],
+                // Exercise names
+                ex: {
+                    'Жим лежачи': 'Жим лежачи',
+                    'Жим лежачи (сінгли)': 'Жим лежачи (сінгли)',
+                    'Тяга верхнього блоку з депресією лопатки': 'Тяга верхнього блоку з депресією лопатки',
+                    'Шраги з ретракцією лопатки': 'Шраги з ретракцією лопатки',
+                    'Біцепс стоячи': 'Біцепс стоячи',
+                    'Жим Арнольда': 'Жим Арнольда',
+                    'Тяга нижнього блоку з ретракцією': 'Тяга нижнього блоку з ретракцією',
+                    'Тяга нижнього блоку з ретракцією лопатки': 'Тяга нижнього блоку з ретракцією лопатки',
+                    'Жим вузьким хватом': 'Жим вузьким хватом',
+                    'Молоткові згинання': 'Молоткові згинання',
+                    'Жим гантель на похилій лавці': 'Жим гантель на похилій лавці',
+                    'Махи на середню дельту': 'Махи на середню дельту',
+                    'Махи на задню дельту': 'Махи на задню дельту',
+                    'Жим стоячи': 'Жим стоячи',
+                    'Розгинання із-за голови': 'Розгинання із-за голови',
+                    'Відтискання на брусах': 'Відтискання на брусах',
+                    'Тяга верхнього блоку з депресією': 'Тяга верхнього блоку з депресією',
+                    'Пуловер через лавку': 'Пуловер через лавку',
+                    'по 1 в гору до важкого': 'по 1 в гору до важкого'
+                },
+                // Warmup/cooldown items
+                warmupItems: {
+                    'Загальна розминка, кардіо 10 хв': 'Загальна розминка, кардіо 10 хв',
+                    'Підйом прямих рук до гори 3×10': 'Підйом прямих рук до гори 3×10',
+                    'Підйом прямих рук через сторони 3×10': 'Підйом прямих рук через сторони 3×10',
+                    'Статичне утримання з упором в стіну 2×10с на руку': 'Статичне утримання з упором в стіну 2×10с на руку',
+                    'Статичне утримання боком 2×10с на руку': 'Статичне утримання боком 2×10с на руку'
+                }
+            },
+            en: {
+                title: 'BENCH PRESS 100 KG — Training Program',
+                headerTitle: 'BENCH PRESS 100 KG',
+                headerSubtitle: 'Training Program · Dmytro Holovynskyi',
+                settings: 'Settings',
+                oneRepMaxLabel: 'Bench press one-rep max',
+                bicepsLabel: 'Standing bicep curl',
+                inclineLabel: 'Incline dumbbell press',
+                ohpLabel: 'Overhead press',
+                closeGripLabel: 'Close grip press',
+                startDateLabel: 'Start date (Monday)',
+                legendTitle: 'Legend',
+                legendLV: '<strong>Light weight</strong> — 40-55% of 1RM, 8+ reps in reserve',
+                legendSV: '<strong>Medium weight</strong> — 50-60% of 1RM, 5-6 reps in reserve',
+                legendVV: '<strong>Heavy weight</strong> — 70-85% of 1RM, 1-2 reps in reserve',
+                legendMV: '<strong>Minimal weight</strong> — barely noticeable or bodyweight',
+                legendXY: '<strong>X by Y</strong> — X sets of Y reps',
+                legendUp: '<strong>Ascending weight</strong> — from light to heavy (1-2 in reserve)',
+                legendArrow: '<strong>Singles up</strong> — single rep sets up to max',
+                legendSingles: '<strong>Singles</strong> — 1 rep with pause on chest',
+                compactPdfLabel: 'Compact PDF (no warmup/cooldown)',
+                savePdfBtn: 'Save as PDF',
+                saveNote: 'Rounded to 2.5 kg for barbell',
+                generatingPdf: 'Generating PDF...',
+                warmup: 'Warm-up',
+                exercises: 'Exercises',
+                cooldown: 'Cool-down',
+                thExercise: 'Exercise',
+                thSets: 'Sets',
+                thWeight: 'Weight',
+                thResult: 'Actual',
+                week1: 'Week I',
+                week2: 'Week II',
+                week3: 'Week III',
+                week4: 'Week IV',
+                unit1RM: '% of 1RM',
+                unitPercent: '%',
+                unitKg: 'kg',
+                dayLabels: ['Mon', 'Wed', 'Fri'],
+                // Exercise names
+                ex: {
+                    'Жим лежачи': 'Bench press',
+                    'Жим лежачи (сінгли)': 'Bench press (singles)',
+                    'Тяга верхнього блоку з депресією лопатки': 'Lat pulldown with scapula depression',
+                    'Шраги з ретракцією лопатки': 'Shrugs with scapula retraction',
+                    'Біцепс стоячи': 'Standing bicep curl',
+                    'Жим Арнольда': 'Arnold press',
+                    'Тяга нижнього блоку з ретракцією': 'Seated cable row with retraction',
+                    'Тяга нижнього блоку з ретракцією лопатки': 'Seated cable row with scapula retraction',
+                    'Жим вузьким хватом': 'Close grip bench press',
+                    'Молоткові згинання': 'Hammer curls',
+                    'Жим гантель на похилій лавці': 'Incline dumbbell press',
+                    'Махи на середню дельту': 'Lateral raises',
+                    'Махи на задню дельту': 'Rear delt flyes',
+                    'Жим стоячи': 'Overhead press',
+                    'Розгинання із-за голови': 'Overhead tricep extension',
+                    'Відтискання на брусах': 'Dips',
+                    'Тяга верхнього блоку з депресією': 'Lat pulldown with depression',
+                    'Пуловер через лавку': 'Dumbbell pullover',
+                    'по 1 в гору до важкого': 'singles up to heavy'
+                },
+                // Warmup/cooldown items translations
+                warmupItems: {
+                    'Загальна розминка, кардіо 10 хв': 'General warmup, 10 min cardio',
+                    'Підйом прямих рук до гори 3×10': 'Front arm raises 3×10',
+                    'Підйом прямих рук до гори 3×12': 'Front arm raises 3×12',
+                    'Підйом прямих рук через сторони 3×10': 'Lateral arm raises 3×10',
+                    'Підйом прямих рук через сторони 3×12': 'Lateral arm raises 3×12',
+                    'Статичне утримання з упором в стіну 2×10с на руку': 'Wall push static hold 2×10s per arm',
+                    'Статичне утримання з упором в стіну 2×15с на руку': 'Wall push static hold 2×15s per arm',
+                    'Статичне утримання з упором 2×15с на руку': 'Static hold with support 2×15s per arm',
+                    'Статичне утримання боком 2×10с на руку': 'Side static hold 2×10s per arm',
+                    'Статичне утримання боком 2×15с на руку': 'Side static hold 2×15s per arm',
+                    'Обертання тулуба з упором 3×12 на руку': 'Torso rotation with support 3×12 per arm',
+                    'Фіксація лопатки з нахилом 2×10 на руку': 'Scapula fixation with lean 2×10 per arm',
+                    'Натяжка лопаток стоячи перед дзеркалом 3×6': 'Scapula stretch standing (mirror) 3×6',
+                    'Натяжка лопаток з упором в лавку 3×6': 'Scapula stretch with bench support 3×6',
+                    'Зашагування руками на платформу 3×6 на руку': 'Hand walk-ups on platform 3×6 per arm',
+                    'Відведення лежачи на боку МВ 3×6': 'Side-lying abduction MW 3×6',
+                    'Відведення лежачи на животу МВ 3×6': 'Prone abduction MW 3×6',
+                    'Натяжка лопаток лежачи на підлозі 3×5': 'Scapula stretch lying on floor 3×5',
+                    'Розтяжка мосту та передньої поверхні стегна': 'Bridge and hip flexor stretch',
+                    'Обертання плеч на похилій лавці 3×6': 'Shoulder rotations on incline bench 3×6',
+                    'Обертання плеч на похилій лавці 3×8': 'Shoulder rotations on incline bench 3×8',
+                    'Обертання плеч на похилій лавці 3×12': 'Shoulder rotations on incline bench 3×12',
+                    'Імітація жиму з палкою 3×5': 'Bench press simulation with stick 3×5'
+                }
+            }
+        };
+
+        let currentLang = localStorage.getItem('lang') || 'uk';
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'uk' ? 'en' : 'uk';
+            localStorage.setItem('lang', currentLang);
+            updateLanguageIcon();
+            renderProgram();
+            applyStaticTranslations();
+        }
+
+        function updateLanguageIcon() {
+            const icon = document.getElementById('langIcon');
+            const btn = icon.parentElement;
+            icon.textContent = currentLang === 'uk' ? 'EN' : 'УК';
+            btn.title = currentLang === 'uk' ? 'Switch to English' : 'Перемкнути на українську';
+        }
+
+        function applyStaticTranslations() {
+            const t = translations[currentLang];
+            
+            // Update page title
+            document.title = t.title;
+            
+            // Update header
+            document.querySelector('.header-content h1').textContent = t.headerTitle;
+            document.querySelector('.header-content p').textContent = t.headerSubtitle;
+            
+            // Update theme toggle tooltip
+            const themeBtn = document.getElementById('themeIcon').parentElement;
+            themeBtn.title = currentLang === 'uk' ? 'Змінити тему' : 'Toggle theme';
+            
+            // Update config section
+            document.querySelector('#configSection h2').textContent = t.settings;
+            
+            // Update labels
+            const labels = document.querySelectorAll('.config-item label');
+            const labelTexts = [t.oneRepMaxLabel, t.bicepsLabel, t.inclineLabel, t.ohpLabel, t.closeGripLabel, t.startDateLabel];
+            labels.forEach((label, i) => {
+                if (labelTexts[i]) label.textContent = labelTexts[i];
+            });
+            
+            // Update units
+            const units = document.querySelectorAll('.config-item .unit');
+            units[0].textContent = t.unitKg;
+            units[1].textContent = t.unit1RM;
+            units[2].textContent = t.unitPercent;
+            units[3].textContent = t.unitPercent;
+            units[4].textContent = t.unitPercent;
+            
+            // Update legend
+            document.querySelector('.legend-title').textContent = t.legendTitle;
+            const legendTexts = document.querySelectorAll('.legend-text');
+            const legendContent = [t.legendLV, t.legendSV, t.legendVV, t.legendMV, t.legendXY, t.legendUp, t.legendArrow, t.legendSingles];
+            legendTexts.forEach((el, i) => {
+                if (legendContent[i]) el.innerHTML = legendContent[i];
+            });
+            
+            // Update legend badges
+            const legendBadges = document.querySelectorAll('.legend-badge');
+            const badgesUk = ['ЛВ', 'СВ', 'ВВ', 'МВ', 'Х×У', '↗', '→', 'сінгли'];
+            const badgesEn = ['LW', 'MW', 'HW', 'MinW', 'X×Y', '↗', '→', 'singles'];
+            const badges = currentLang === 'uk' ? badgesUk : badgesEn;
+            legendBadges.forEach((el, i) => {
+                if (badges[i]) el.textContent = badges[i];
+            });
+            
+            // Update save section
+            document.querySelector('.checkbox-label span').textContent = t.compactPdfLabel;
+            document.querySelector('.save-btn').textContent = t.savePdfBtn;
+            document.querySelector('.save-section .note').textContent = t.saveNote;
+            document.querySelector('.loading-spinner p').textContent = t.generatingPdf;
+        }
+
+        function getTranslatedText(text, type) {
+            const t = translations[currentLang];
+            if (type === 'exercise') {
+                return t.ex[text] || text;
+            }
+            if (type === 'warmup') {
+                return t.warmupItems[text] || text;
+            }
+            return text;
+        }
+
+        // Initialize language on load
+        (function() {
+            updateLanguageIcon();
+            // Apply static translations after DOM is ready
+            setTimeout(() => applyStaticTranslations(), 0);
+        })();
+
         // Toggle functions
         function toggleWeek(weekId) {
             const section = document.getElementById(weekId);
@@ -966,14 +1237,14 @@
             'розтяжка мосту та передньої поверхні стегна': 'https://youtu.be/nHZ-HnS2BV0?si=ceo-KF66OPwOsP-F&t=1046'
         };
 
-        function addVideoLink(text) {
-            const lowerText = text.toLowerCase();
+        function addVideoLink(displayText, originalText = null) {
+            const textToMatch = (originalText || displayText).toLowerCase();
             for (const [keyword, url] of Object.entries(VIDEO_LINKS)) {
-                if (lowerText.includes(keyword)) {
-                    return `<a href="${url}" target="_blank" class="video-link">${text}</a>`;
+                if (textToMatch.includes(keyword)) {
+                    return `<a href="${url}" target="_blank" class="video-link">${displayText}</a>`;
                 }
             }
-            return text;
+            return displayText;
         }
 
         function roundToBarbell(weight) {
@@ -1275,8 +1546,9 @@
             
             let html = '';
 
-            const weekNames = { week1: 'Тиждень I', week2: 'Тиждень II', week3: 'Тиждень III', week4: 'Тиждень IV' };
-            const dayLabels = ['Пн', 'Ср', 'Пт'];
+            const t = translations[currentLang];
+            const weekNames = { week1: t.week1, week2: t.week2, week3: t.week3, week4: t.week4 };
+            const dayLabels = t.dayLabels;
             const weekIndices = { week1: 0, week2: 1, week3: 2, week4: 3 };
             const dayIndices = { day1: 0, day2: 1, day3: 2 };
 
@@ -1310,9 +1582,9 @@
                     if (dayData.warmup?.length) {
                         html += `
                             <div class="block warmup">
-                                <div class="block-header">Розминка</div>
+                                <div class="block-header">${t.warmup}</div>
                                 <ul class="warmup-list">
-                                    ${dayData.warmup.map(item => `<li>${addVideoLink(item)}</li>`).join('')}
+                                    ${dayData.warmup.map(item => `<li>${addVideoLink(getTranslatedText(item, 'warmup'), item)}</li>`).join('')}
                                 </ul>
                             </div>
                         `;
@@ -1321,15 +1593,15 @@
                     if (dayData.exercises?.length) {
                         html += `
                             <div class="block exercises">
-                                <div class="block-header">Вправи</div>
+                                <div class="block-header">${t.exercises}</div>
                                 <table class="exercise-table">
                                     <thead>
                                         <tr>
                                             <th class="col-num">#</th>
-                                            <th class="col-name">Вправа</th>
-                                            <th class="col-sets">Підходи</th>
-                                            <th class="col-weight">Вага</th>
-                                            <th class="col-result">Факт</th>
+                                            <th class="col-name">${t.thExercise}</th>
+                                            <th class="col-sets">${t.thSets}</th>
+                                            <th class="col-weight">${t.thWeight}</th>
+                                            <th class="col-result">${t.thResult}</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -1347,23 +1619,40 @@
                                 const percentDisplay = result.minPercent === result.maxPercent
                                     ? `${result.minPercent}%`
                                     : `${result.minPercent}–${result.maxPercent}%`;
+                                const categoryDisplay = currentLang === 'en' 
+                                    ? { 'ЛВ': 'LW', 'СВ': 'MW', 'ВВ': 'HW' }[result.category] || result.category 
+                                    : result.category;
                                 weightCell = `
                                     <div class="weight-info">
-                                        <span class="weight-value">${weightDisplay} кг</span>
-                                        <span class="weight-meta">(${result.category} ${percentDisplay})</span>
+                                        <span class="weight-value">${weightDisplay} ${t.unitKg}</span>
+                                        <span class="weight-meta">(${categoryDisplay} ${percentDisplay})</span>
                                     </div>
                                 `;
                             } else if (showInput) {
-                                weightCell = `<input type="text" class="user-weight-input" placeholder="${ex.weight}">`;
+                                const placeholderWeight = currentLang === 'en' 
+                                    ? { 'ЛВ': 'LW', 'СВ': 'MW', 'ВВ': 'HW' }[ex.weight] || ex.weight 
+                                    : ex.weight;
+                                weightCell = `<input type="text" class="user-weight-input" placeholder="${placeholderWeight}">`;
                             } else {
-                                weightCell = `<span class="weight-empty">${ex.weight}</span>`;
+                                let displayWeight = ex.weight;
+                                if (currentLang === 'en') {
+                                    displayWeight = displayWeight
+                                        .replace('власна/СВ', 'BW/MW')
+                                        .replace('ЛВ', 'LW')
+                                        .replace('СВ', 'MW')
+                                        .replace('ВВ', 'HW');
+                                }
+                                weightCell = `<span class="weight-empty">${displayWeight}</span>`;
                             }
 
+                            const translatedName = getTranslatedText(ex.name, 'exercise');
+                            const translatedSets = currentLang === 'en' ? ex.sets.replace('по 1 в гору до важкого', 'singles up to heavy') : ex.sets;
+                            
                             html += `
                                 <tr>
                                     <td><div class="exercise-num">${idx + 1}</div></td>
-                                    <td class="exercise-name">${ex.name}</td>
-                                    <td class="sets-reps">${ex.sets}</td>
+                                    <td class="exercise-name">${translatedName}</td>
+                                    <td class="sets-reps">${translatedSets}</td>
                                     <td>${weightCell}</td>
                                     <td><input type="text" class="result-input" placeholder="—"></td>
                                 </tr>
@@ -1380,9 +1669,9 @@
                     if (dayData.cooldown?.length) {
                         html += `
                             <div class="block cooldown">
-                                <div class="block-header">Заминка</div>
+                                <div class="block-header">${t.cooldown}</div>
                                 <ul class="warmup-list">
-                                    ${dayData.cooldown.map(item => `<li>${addVideoLink(item)}</li>`).join('')}
+                                    ${dayData.cooldown.map(item => `<li>${addVideoLink(getTranslatedText(item, 'warmup'), item)}</li>`).join('')}
                                 </ul>
                             </div>
                         `;
@@ -1411,12 +1700,12 @@
 
             const configSection = document.getElementById('configSection');
             const saveSection = document.getElementById('saveSection');
-            const themeToggle = document.querySelector('.theme-toggle');
+            const headerControls = document.querySelector('.header-controls');
             const mainContainer = document.getElementById('mainContainer');
             
             configSection.style.display = 'none';
             saveSection.style.display = 'none';
-            themeToggle.style.display = 'none';
+            headerControls.style.display = 'none';
 
             // Apply compact mode if selected
             if (isCompact) {
@@ -1428,11 +1717,15 @@
 
             const element = document.getElementById('mainContainer');
             const oneRM = document.getElementById('oneRepMax').value;
-            const suffix = isCompact ? '_компакт' : '';
+            
+            const filePrefix = currentLang === 'uk' ? 'ЖИМ_100КГ' : 'BENCH_100KG';
+            const kgLabel = currentLang === 'uk' ? 'кг' : 'kg';
+            const compactSuffix = currentLang === 'uk' ? '_компакт' : '_compact';
+            const suffixFinal = isCompact ? compactSuffix : '';
             
             const opt = {
                 margin: isCompact ? [5, 5, 5, 5] : [10, 8, 10, 8],
-                filename: `ЖИМ_100КГ_1RM_${oneRM}кг${suffix}.pdf`,
+                filename: `${filePrefix}_1RM_${oneRM}${kgLabel}${suffixFinal}.pdf`,
                 image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: { 
                     scale: 2, 
@@ -1448,13 +1741,16 @@
                 await html2pdf().set(opt).from(element).save();
             } catch (err) {
                 console.error('PDF error:', err);
-                alert('Помилка при генерації PDF. Спробуйте ще раз.');
+                const errorMsg = currentLang === 'uk' 
+                    ? 'Помилка при генерації PDF. Спробуйте ще раз.' 
+                    : 'Error generating PDF. Please try again.';
+                alert(errorMsg);
             }
 
             // Restore UI
             configSection.style.display = 'block';
             saveSection.style.display = 'block';
-            themeToggle.style.display = 'flex';
+            headerControls.style.display = 'flex';
             mainContainer.classList.remove('compact-pdf');
             document.querySelectorAll('.toggle-icon').forEach(el => el.style.display = '');
             
