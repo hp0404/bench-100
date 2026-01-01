@@ -566,6 +566,66 @@
             cursor: not-allowed;
         }
 
+        .save-options {
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--accent);
+            cursor: pointer;
+        }
+
+        /* Compact PDF mode */
+        .compact-pdf .block.warmup,
+        .compact-pdf .block.cooldown {
+            display: none !important;
+        }
+
+        .compact-pdf .day-content {
+            padding-top: 0.5rem;
+        }
+
+        .compact-pdf .day-section {
+            margin-bottom: 0.25rem;
+        }
+
+        .compact-pdf .week-content {
+            margin-top: 0.25rem;
+        }
+
+        .compact-pdf .week-section {
+            margin-bottom: 1rem;
+        }
+
+        .compact-pdf .exercise-table td,
+        .compact-pdf .exercise-table th {
+            padding: 0.4rem 0.25rem;
+            font-size: 0.85rem;
+        }
+
+        .compact-pdf .weight-value {
+            font-size: 0.8rem;
+        }
+
+        .compact-pdf .weight-meta {
+            font-size: 0.65rem;
+        }
+
+        .compact-pdf .legend-section {
+            display: none;
+        }
+
         .note {
             font-size: 0.8rem;
             color: var(--text-muted);
@@ -760,6 +820,12 @@
         <div id="programContent"></div>
 
         <section class="save-section" id="saveSection">
+            <div class="save-options">
+                <label class="checkbox-label">
+                    <input type="checkbox" id="compactPdf" checked>
+                    <span>Компактний PDF (без розминки/заминки)</span>
+                </label>
+            </div>
             <button class="save-btn" id="saveBtn" onclick="savePDF()">Зберегти як PDF</button>
             <p class="note">Заокруглення до 2.5 кг для штанги</p>
         </section>
@@ -1335,6 +1401,7 @@
         async function savePDF() {
             const btn = document.getElementById('saveBtn');
             const overlay = document.getElementById('loadingOverlay');
+            const isCompact = document.getElementById('compactPdf').checked;
             
             btn.disabled = true;
             overlay.classList.add('active');
@@ -1345,21 +1412,27 @@
             const configSection = document.getElementById('configSection');
             const saveSection = document.getElementById('saveSection');
             const themeToggle = document.querySelector('.theme-toggle');
-            const legendSection = document.querySelector('.legend');
+            const mainContainer = document.getElementById('mainContainer');
             
             configSection.style.display = 'none';
             saveSection.style.display = 'none';
             themeToggle.style.display = 'none';
+
+            // Apply compact mode if selected
+            if (isCompact) {
+                mainContainer.classList.add('compact-pdf');
+            }
 
             // Hide toggle icons for PDF
             document.querySelectorAll('.toggle-icon').forEach(el => el.style.display = 'none');
 
             const element = document.getElementById('mainContainer');
             const oneRM = document.getElementById('oneRepMax').value;
+            const suffix = isCompact ? '_компакт' : '';
             
             const opt = {
-                margin: [10, 8, 10, 8],
-                filename: `ЖИМ_100КГ_1RM_${oneRM}кг.pdf`,
+                margin: isCompact ? [5, 5, 5, 5] : [10, 8, 10, 8],
+                filename: `ЖИМ_100КГ_1RM_${oneRM}кг${suffix}.pdf`,
                 image: { type: 'jpeg', quality: 0.95 },
                 html2canvas: { 
                     scale: 2, 
@@ -1382,6 +1455,7 @@
             configSection.style.display = 'block';
             saveSection.style.display = 'block';
             themeToggle.style.display = 'flex';
+            mainContainer.classList.remove('compact-pdf');
             document.querySelectorAll('.toggle-icon').forEach(el => el.style.display = '');
             
             overlay.classList.remove('active');
